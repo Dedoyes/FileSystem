@@ -1,0 +1,13 @@
+login
+mkdir
+chdir
+dir
+create
+open
+write
+read
+close
+delete
+logout
+rmdir/rm
+format
