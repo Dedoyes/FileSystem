@@ -3,6 +3,8 @@
 
 #include <ctime>
 #include <ostream>
+#include "cereal/include/cereal/archives/binary.hpp"
+#include "cereal/include/cereal/types/string.hpp"
 
 #define MAX_USER_NUM 8
 #define REGULAR_FILE 0
@@ -24,6 +26,10 @@ public :
     friend std::ostream &operator << (std::ostream &os, const Time &t) { 
         os << t.year << ":" << t.month << ":" << t.date << ":" << t.hour << ":" << t.minute << ":" << t.second;
         return os;
+    }
+    template <class Archive>
+    void serialize (Archive& ar) {
+        ar (year, month, date, hour, minute, second);
     }
     Time () {
         std::time_t now = std::time (nullptr);

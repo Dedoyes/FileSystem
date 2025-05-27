@@ -14,6 +14,11 @@ private :
     int fileConnectSum;
     Time lastChangeTime;
 public : 
+    template <class Archive>
+    void serialize (Archive& ar) {
+        ar (ownerId, fileType, fileStoragePermission, fileAddress,
+            fileLength, fileConnectSum, lastChangeTime);
+    } 
     DiskIndexNode (short _ownerId, short _fileType, int _fileAddress, int _fileLength, int _fileConnectSum, Time _lastChangeTime) {
         this->ownerId = _ownerId;
         this->fileType = _fileType;

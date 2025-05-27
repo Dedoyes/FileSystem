@@ -4,15 +4,15 @@
 #include <string>
 #include <vector>
 #include "general.hpp"
+#include <map>
+#include "./cereal/include/cereal/archives/binary.hpp"
+#include "./cereal/include/cereal/types/map.hpp"
 
-class InodeIndexTree {
+class inodeTree {
 private : 
-    int idxcnt;
-    std::vector <int> tree[BLOCK_SIZE >> 2];
-public : 
-    void insert (int address) {
-        
-    }
+    std::map <short, std::set <int> > blockAddress;
+public :
+    void assignAddress (short )
 };
 
 #endif
