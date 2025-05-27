@@ -4,6 +4,19 @@
 #include <ctime>
 #include <ostream>
 
+#define MAX_USER_NUM 8
+#define REGULAR_FILE 0
+#define DIRETORY 1
+#define SYMBOLIC_LINK 2
+#define BLOCK_DEVICE_FILE 3
+#define CHARACTER_DEVICE_FILE 4
+#define FIFO 5
+#define SOCKET 6
+#define READ "r"
+#define WRITE "w"
+#define EXECUTE "x"
+#define BLOCK_SIZE 4096
+
 class Time {
 private : 
     short year, month, date, hour, minute, second;
@@ -71,17 +84,5 @@ public :
         return ((*this) == t) || ((*this) < t);
     }
 };
-
-#define MAX_USER_NUM 8
-#define REGULAR_FILE 0
-#define DIRETORY 1
-#define SYMBOLIC_LINK 2
-#define BLOCK_DEVICE_FILE 3
-#define CHARACTER_DEVICE_FILE 4
-#define FIFO 5
-#define SOCKET 6
-#define READ "r"
-#define WRITE "w"
-#define EXECUTE "x"
 
 #endif
