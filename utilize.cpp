@@ -1,7 +1,16 @@
 #ifndef __UTILIZE_H
 #define __UTILIZE_H
 
+#include <set>
 #include <string>
+
+template <typename T>
+size_t estimate_set_memory (const std::set <T> &s) {
+    size_t node_size = sizeof (T) + 3 * sizeof (void*);
+    size_t padding = (8 - (node_size % 8)) % 8;
+    node_size += padding;
+    return s.size () * node_size;
+}
 
 std::string reguPermission (std::string s) {
     std::string res = "";

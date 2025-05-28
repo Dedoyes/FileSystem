@@ -29,6 +29,14 @@ public :
         }
         whichInode.erase (fileName);
     }
+    void rename (std::string previousName, std::string newName) {
+        if (whichInode.count (newName)) {
+            std::cout << "Error : " << newName << " is existed!" << std::endl;
+            return;
+        }
+        whichInode[newName] = whichInode[previousName];
+        whichInode.erase (previousName);
+    }
 };
 
 #endif 

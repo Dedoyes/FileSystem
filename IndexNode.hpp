@@ -67,6 +67,16 @@ public :
     }
 };
 
+class DiskIndexNodeCluster {
+private :
+    std::vector <DiskIndexNode> vec;
+public :
+    inline void push_back (DiskIndexNode diskIndexNode) {
+         vec.push_back (diskIndexNode);
+    }
+    
+};
+
 class MemIndexNode {
 private : 
     short state;
