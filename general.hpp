@@ -3,9 +3,18 @@
 
 #include <ctime>
 #include <ostream>
+#include <vector>
 #include "cereal/include/cereal/archives/binary.hpp"
 #include "cereal/include/cereal/types/string.hpp"
 
+#define VDISK_START_FILE "virtual_start_disk.bin"
+#define VDISK_FILE "virtual_disk.bin"
+#define START_DISK_SIZE 10 * 1024 * 1024
+#define DATA_DISK_SIZE 10 * 1024 * 1024
+#define BLOCK_SIZE 4096
+#define MAX_INDEX_NODE_NUM 2560
+#define MAX_BLOCK_NUM 2560
+#define MAX_MEM_INODE_NUM 1024
 #define MAX_USER_NUM 8
 #define REGULAR_FILE 0
 #define DIRETORY 1
@@ -18,6 +27,9 @@
 #define WRITE "w"
 #define EXECUTE "x"
 #define BLOCK_SIZE 4096
+#define LOCK 0
+#define CHANGING 1
+#define FREE 2
 
 class Time {
 private : 

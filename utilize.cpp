@@ -41,5 +41,4 @@ inline bool hasExecute (std::string s) {
     return false;
 }
 
-
 #endif

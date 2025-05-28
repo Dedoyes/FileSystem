@@ -1,15 +1,22 @@
 #ifndef __INDEX_NODE_HPP
 #define __INDEX_NODE_HPP
-#include "general.hpp"
+
+#include <iostream>
+#include <set>
 #include <string>
 #include <vector>
+#include "SuperBlock.hpp"
+#include "general.hpp"
+#include "inodeTree.hpp"
+
+extern SuperBlock super;
 
 class DiskIndexNode {
 private : 
     short ownerId;
     short fileType;
     std::string fileStoragePermission[MAX_USER_NUM];
-    int fileAddress;
+    int fileAddress;                        // Adress of inode Tree in disk
     int fileLength;
     int fileConnectSum;
     Time lastChangeTime;
@@ -18,7 +25,21 @@ public :
     void serialize (Archive& ar) {
         ar (ownerId, fileType, fileStoragePermission, fileAddress,
             fileLength, fileConnectSum, lastChangeTime);
-    } 
+    }
+    void init (short UserId) {
+        if (super.hasFreeIndexSpace ()) {
+            std::cout << "Error : there is no available disk room!" << std::endl;
+            exit (1);
+        }
+        this->fileAddress = super.askFreeIndex ();
+        super.occupyIndex (this->fileAddress);
+        this->ownerId = UserId;
+        this->fileType = REGULAR_FILE;
+        for (int i = 0; i < MAX_USER_NUM; i++) 
+            this->fileStoragePermission[i] = "";
+        fileConnectSum = 0;
+        lastChangeTime = Time ();
+    }
     DiskIndexNode (short _ownerId, short _fileType, int _fileAddress, int _fileLength, int _fileConnectSum, Time _lastChangeTime) {
         this->ownerId = _ownerId;
         this->fileType = _fileType;
@@ -49,10 +70,12 @@ public :
 class MemIndexNode {
 private : 
     short state;
-    short visitSum;
     int nodeId;
     int logicDeviceId;
     std::vector <int> connectPointer;
+public :
 };
+
+extern std::vector <MemIndexNode> memIndexVec;
 
 #endif

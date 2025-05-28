@@ -1,11 +1,11 @@
 #ifndef __FILE_CONTROL_BLOCK_H
 #define __FILE_CONTROL_BLOCK_H
 
+#include <iostream>
 #include <string>
 #include <map>
 #include "cereal/include/cereal/archives/binary.hpp"
 #include "cereal/include/cereal/types/map.hpp"
-#include <iostream>
 
 class FCB {
 private :
