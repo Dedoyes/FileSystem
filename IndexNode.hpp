@@ -8,6 +8,9 @@
 #include "SuperBlock.hpp"
 #include "general.hpp"
 #include "inodeTree.hpp"
+#include "./cereal/include/cereal/archives/binary.hpp"
+#include "./cereal/include/cereal/types/string.hpp"
+
 
 extern SuperBlock super;
 
@@ -76,7 +79,7 @@ private :
 public :
     template <class Archive>
     void serialize (Archive& ar) {
-        ar (current, usedNum, cluster);
+        ar (vis, current, usedNum, cluster);
     }
     DiskIndexNode& operator [] (int index) {
         if (index < 0 || index >= MAX_INDEX_NODE_NUM) {

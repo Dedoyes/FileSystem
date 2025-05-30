@@ -17,10 +17,10 @@ public :
     void serialize (Archive& ar) {
         ar (remainIndexAddress, remainBlcokAddress);
     }
-    inline int memorySize () {
-        int structSize = sizeof (SuperBlock);
-        int heapSize = sizeof (int) * remainIndexAddress.capacity ();
-    }
+    //inline int memorySize () {
+    //    int structSize = sizeof (SuperBlock);
+    //    int heapSize = sizeof (int) * remainIndexAddress.capacity ();
+    //}
     void init () {
         for (int i = 0; i < MAX_INDEX_NODE_NUM; i++)
             remainIndexAddress.insert (i);

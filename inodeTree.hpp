@@ -8,6 +8,7 @@
 #include "general.hpp"
 #include "./cereal/include/cereal/archives/binary.hpp"
 #include "./cereal/include/cereal/types/map.hpp"
+#include "./cereal/include/cereal/types/vector.hpp"
 
 class inodeTree {
 private :

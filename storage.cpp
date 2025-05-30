@@ -39,7 +39,7 @@ void storageInodeForest () {
         std::cout << "Error : VIRTUAL START Disk can not be opened!" << std::endl;
         exit (1);
     }
-    cereal::BinaryInputArchive forestArchive (os);
+    cereal::BinaryOutputArchive forestArchive (os);
     forestArchive (forest);
     os.close ();
 }

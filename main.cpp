@@ -46,7 +46,7 @@ int main () {
     fclose (disk);
     std::cout << "initialize success." << std::endl;
     /*
-    charar block[BLOCK_SIZE];
+    char block[BLOCK_SIZE];
     memset (block, 0, BLOCK_SIZE);
     strcpy (block, "hello.");
     write_block (0, block);

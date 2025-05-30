@@ -1,8 +1,36 @@
 #ifndef __UTILIZE_H
 #define __UTILIZE_H
 
+#include <iostream>
 #include <set>
 #include <string>
+#include "general.hpp"
+
+void write_block (int block_number, const void* data) {
+    if (block_number < 0 || block_number >= MAX_BLOCK_NUM) {
+        std::cout << "Error : Block index is illegal!" << std::endl;
+        exit (1);
+    }
+    FILE* disk = fopen (VDISK_FILE, "r+b");
+    if (!disk) {
+        perror ("Failed to open virtual disk!");
+        exit (1);
+    }
+    fseek (disk, block_number * BLOCK_SIZE, SEEK_SET);
+    fwrite (data, 1, BLOCK_SIZE, disk);
+    fclose (disk);
+}
+
+void read_block (int block_number, void* buffer) {
+    FILE* disk = fopen (VDISK_FILE, "rb");
+    if (!disk) {
+        perror ("Failed to open virtual disk!");
+        exit (1);
+    }
+    fseek (disk, block_number * BLOCK_SIZE, SEEK_SET);
+    fread (buffer, 1, BLOCK_SIZE, disk);
+    fclose (disk);
+}
 
 template <typename T>
 size_t estimate_set_memory (const std::set <T> &s) {
