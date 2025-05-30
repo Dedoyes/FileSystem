@@ -69,12 +69,63 @@ public :
 
 class DiskIndexNodeCluster {
 private :
-    std::vector <DiskIndexNode> vec;
+    bool vis[MAX_INDEX_NODE_NUM];
+    int current;
+    int usedNum;
+    DiskIndexNode cluster[MAX_INDEX_NODE_NUM];
 public :
-    inline void push_back (DiskIndexNode diskIndexNode) {
-         vec.push_back (diskIndexNode);
+    template <class Archive>
+    void serialize (Archive& ar) {
+        ar (current, usedNum, cluster);
     }
-    
+    DiskIndexNode& operator [] (int index) {
+        if (index < 0 || index >= MAX_INDEX_NODE_NUM) {
+            std::cout << "Error : Subscript was illegal!" << std::endl;
+            exit (1);
+        }
+        if (!vis[index]) {
+            std::cout << "Error : this index block was empty" << std::endl;
+            exit (1);
+        }
+        return cluster[index];
+    }
+    void insert (DiskIndexNode node) {
+        if (usedNum == MAX_INDEX_NODE_NUM - 1) {
+            std::cout << "Warning : The disk index node cluster is full!" << std::endl;
+            return;
+        }
+        if (vis[current]) {
+            std::cout << "Warning : This node is occupied!" << std::endl;
+            return;
+        }
+        usedNum++;
+        vis[current] = true;
+        cluster[current] = node;
+        for (int i = 0; i < MAX_INDEX_NODE_NUM; i++) {
+            if (!vis[i]) {
+                current = i;
+                break;
+            }
+        }
+    }
+    void erase (int idx) {
+        if (idx < 0 || idx >= MAX_INDEX_NODE_NUM) {
+            std::cout << "Error : Subscript is illegal!" << std::endl;
+            exit (1);
+        }
+        if (!vis[idx]) {
+            std::cout << "Warning : this index block is empty." << std::endl;
+            return;
+        }
+        usedNum--;
+        vis[idx] = false;
+        for (int i = 0; i < MAX_INDEX_NODE_NUM; i++) {
+            if (!vis[i]) {
+                current = i;
+                break;
+            }
+        }
+    }
 };
 
 class MemIndexNode {
