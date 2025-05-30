@@ -6,10 +6,10 @@
 #include "./cereal/include/cereal/archives/binary.hpp"
 #include "inodeTree.hpp"
 
-extern SuperBlock super;
-extern FCB fcb;
-extern inodeForest forest;
-extern DiskIndexNodeCluster cluster;
+SuperBlock super;
+FCB fcb;
+inodeForest forest;
+DiskIndexNodeCluster cluster;
 
 void storageSuperBlock () {
     std::ofstream os (VDISK_START_FILE, std::ios::binary); 
@@ -97,4 +97,8 @@ void readDiskIndexNodeCluster () {
     cereal::BinaryInputArchive clusterArchive (is);
     clusterArchive (cluster);
     is.close ();
+}
+
+int main () {
+    return 0;
 }

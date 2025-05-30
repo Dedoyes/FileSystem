@@ -29,6 +29,16 @@ public :
         ar (ownerId, fileType, fileStoragePermission, fileAddress,
             fileLength, fileConnectSum, lastChangeTime);
     }
+    DiskIndexNode () {
+        this->ownerId = 0;
+        this->fileType = 0;
+        for (int i = 0; i < MAX_USER_NUM; i++)
+            this->fileStoragePermission[i] = "";
+        this->fileAddress = 0;
+        this->fileLength = 0;
+        this->fileConnectSum = 0;
+        this->lastChangeTime = Time ();
+    }
     void init (short UserId) {
         if (super.hasFreeIndexSpace ()) {
             std::cout << "Error : there is no available disk room!" << std::endl;
@@ -80,6 +90,14 @@ public :
     template <class Archive>
     void serialize (Archive& ar) {
         ar (vis, current, usedNum, cluster);
+    }
+    DiskIndexNodeCluster () {
+        for (int i = 0; i < MAX_INDEX_NODE_NUM; i++) 
+            this->vis[i] = false;
+        current = 0;
+        usedNum = 0;
+        for (int i = 0; i < MAX_INDEX_NODE_NUM; i++)
+            cluster[i] = DiskIndexNode ();
     }
     DiskIndexNode& operator [] (int index) {
         if (index < 0 || index >= MAX_INDEX_NODE_NUM) {
