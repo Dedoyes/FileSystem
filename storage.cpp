@@ -4,15 +4,15 @@
 #include "IndexNode.hpp"
 #include "SuperBlock.hpp"
 #include "general.hpp"
-#include "fileControlBlock.hpp"
 #include "./cereal/include/cereal/archives/binary.hpp"
 #include "inodeTree.hpp"
+#include "user.hpp"
 
 extern SuperBlock super;
-extern FCB fcb;
 extern inodeForest forest;
 extern DiskIndexNodeCluster cluster;
 extern fileTree ft;
+extern UserCluster userGroup; 
 
 void storageSuperBlock () {
     std::ofstream os (VDISK_START_FILE, std::ios::binary); 
@@ -22,17 +22,6 @@ void storageSuperBlock () {
     }
     cereal::BinaryOutputArchive superBlockArchive (os);
     superBlockArchive (super);
-    os.close ();
-}
-
-void storageFCB () {
-    std::ofstream os (VDISK_START_FILE, std::ios::binary);
-    if (!os) {
-        std::cout << "Error : VIRTUAL START DISK can not be opened!" << std::endl;
-        exit (1);
-    }
-    cereal::BinaryOutputArchive fcbArchive (os);
-    fcbArchive (fcb);
     os.close ();
 }
 
@@ -69,6 +58,16 @@ void storageFileTree () {
     os.close ();
 }
 
+void storageUserGroup () {
+    std::ofstream os (VDISK_START_FILE, std::ios::binary);
+    if (!os) {
+        std::cout << "Error : VIRTUAL START DISK can not be opened!" << std::endl;
+        exit (1);
+    }
+    cereal::BinaryOutputArchive userArchive (os);
+    userArchive (userGroup);
+}
+
 void readSuperBlock () {
     std::ifstream is (VDISK_START_FILE, std::ios::binary);
     if (!is) {
@@ -77,17 +76,6 @@ void readSuperBlock () {
     }
     cereal::BinaryInputArchive superBlockArchive (is);
     superBlockArchive (super);
-    is.close ();
-}
-
-void readFCB () {
-    std::ifstream is (VDISK_START_FILE, std::ios::binary);
-    if (!is) {
-        std::cout << "Error : VIRTUAL START DISK can not be opened!" << std::endl;
-        exit (1);
-    }
-    cereal::BinaryInputArchive fcbArchive (is);
-    fcbArchive (fcb);
     is.close ();
 }
 
@@ -121,5 +109,16 @@ void readFileTree () {
     }
     cereal::BinaryInputArchive fileTreeArchive (is);
     fileTreeArchive (ft);
+    is.close ();
+}
+
+void readUserGroup () {
+    std::ifstream is (VDISK_START_FILE, std::ios::binary);
+    if (!is) {
+        std::cout << "Error : VIRTUAL START DISK can not be opened!" << std::endl;
+        exit (1);
+    }
+    cereal::BinaryInputArchive userGroupArchive (is);
+    userGroupArchive (userGroup);
     is.close ();
 }

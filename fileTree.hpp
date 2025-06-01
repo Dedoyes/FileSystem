@@ -10,17 +10,23 @@
 #include "./general.hpp"
 
 class fileTree {
-public : 
+public :
+    short inodeAddress[MAX_BLOCK_NUM];
+    short father[MAX_BLOCK_NUM];
     short deg[MAX_BLOCK_NUM];
     std::vector <short> son[MAX_BLOCK_NUM];
+    std::string fileName[MAX_BLOCK_NUM];
     template <class Archive> 
     void serialize (Archive& ar) {
-        ar (deg, son);
+        ar (inodeAddress, father, deg, son, fileName);
     }
     fileTree () {
         for (int i = 0; i < MAX_BLOCK_NUM; i++) { 
+            this->inodeAddress[i] = 0;
+            this->father[i] = 0;
             this->son[i].clear ();
             this->deg[i] = 0;
+            this->fileName[i] = "";
         }
     }
     void connect (short fatherId, short sonId) {

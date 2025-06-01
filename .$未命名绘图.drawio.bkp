@@ -16,7 +16,7 @@
         <mxCell id="Ll4xHpIb0abAefAf7uro-1" value="inodeforest" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="590" y="290" width="100" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="Ll4xHpIb0abAefAf7uro-2" value="filetree" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="Ll4xHpIb0abAefAf7uro-2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="700" y="290" width="120" height="20" as="geometry" />
         </mxCell>
       </root>

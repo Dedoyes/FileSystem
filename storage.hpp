@@ -4,9 +4,6 @@
 void storageSuperBlock (void);
 void readSuperBlock (void);
 
-void storageFCB (void);
-void readFCB (void);
-
 void storageInodeForest (void); 
 void readInodeForest (void);
 
@@ -16,5 +13,7 @@ void readDiskIndexNodeCLuster (void);
 void storageFileTree (void); 
 void readFileTree (void);
 
+void storageUserGroup (void);
+void readUserGroup (void);
 
 #endif

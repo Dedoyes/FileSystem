@@ -4,18 +4,19 @@
 #include <unistd.h>
 #include "general.hpp"
 #include "IndexNode.hpp"
-#include "fileControlBlock.hpp"
 #include "inodeTree.hpp"
 #include "fileTree.hpp"
 #include "storage.hpp"
+#include "user.hpp"
 #include "utilize.hpp"
 #include  "FileTreePrinter.h"
 
+std::string fileStr[MAX_BLOCK_NUM];
 SuperBlock super;
-FCB fcb;
 inodeForest forest;
 DiskIndexNodeCluster cluster;
 fileTree ft;
+UserCluster userGroup;
 
 // int main () {
 //     FILE* start_disk = fopen (VDISK_START_FILE, "wb");
