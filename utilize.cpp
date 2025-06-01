@@ -1,10 +1,8 @@
-#ifndef __UTILIZE_H
-#define __UTILIZE_H
-
 #include <iostream>
 #include <set>
 #include <string>
 #include "general.hpp"
+#include "utilize.hpp"
 
 void write_block (int block_number, const void* data) {
     if (block_number < 0 || block_number >= MAX_BLOCK_NUM) {
@@ -78,4 +76,3 @@ inline bool hasExecute (std::string s) {
     return false;
 }
 
-#endif

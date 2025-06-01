@@ -1,5 +1,5 @@
-#ifndef __FILE_CONTROL_BLOCK_H
-#define __FILE_CONTROL_BLOCK_H
+#ifndef __FILE_CONTROL_BLOCK_HPP
+#define __FILE_CONTROL_BLOCK_HPP
 
 #include <iostream>
 #include <string>

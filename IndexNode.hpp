@@ -149,15 +149,4 @@ public :
     }
 };
 
-class MemIndexNode {
-private : 
-    short state;
-    int nodeId;
-    int logicDeviceId;
-    std::vector <int> connectPointer;
-public :
-};
-
-extern std::vector <MemIndexNode> memIndexVec;
-
 #endif

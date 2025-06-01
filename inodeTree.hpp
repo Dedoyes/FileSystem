@@ -1,5 +1,5 @@
-#ifndef __INODE_TREE_H
-#define __INODE_TREE_H
+#ifndef __INODE_TREE_HPP
+#define __INODE_TREE_HPP
 
 #include <iostream>
 #include <map>

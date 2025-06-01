@@ -1,2 +1,5 @@
-g++ ./main.cpp -std=c++20 -I ./cereal/include -o ./program
+g++ -std=c++20 -I ./cereal/include -c ./storage.cpp
+g++ -std=c++20 -I ./cereal/include -c ./utilize.cpp
+g++ -std=c++20 -I ./cereal/include -c ./main.cpp
+g++ storage.o utilize.o main.o -o ./program
 ./program

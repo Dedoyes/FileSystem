@@ -1,4 +1,6 @@
 #include <fstream>
+#include "fileTree.hpp"
+#include "storage.hpp"
 #include "IndexNode.hpp"
 #include "SuperBlock.hpp"
 #include "general.hpp"
@@ -6,10 +8,11 @@
 #include "./cereal/include/cereal/archives/binary.hpp"
 #include "inodeTree.hpp"
 
-SuperBlock super;
-FCB fcb;
-inodeForest forest;
-DiskIndexNodeCluster cluster;
+extern SuperBlock super;
+extern FCB fcb;
+extern inodeForest forest;
+extern DiskIndexNodeCluster cluster;
+extern fileTree ft;
 
 void storageSuperBlock () {
     std::ofstream os (VDISK_START_FILE, std::ios::binary); 
@@ -52,6 +55,17 @@ void storageDiskIndexNodeCluster () {
     }
     cereal::BinaryOutputArchive diskIndexNodeArchive (os);
     diskIndexNodeArchive (cluster);
+    os.close ();
+}
+
+void storageFileTree () {
+    std::ofstream os (VDISK_START_FILE, std::ios::binary);
+    if (!os) {
+        std::cout << "Error : VIRTUAL START Disk can not be opened!" << std::endl;
+        exit (1);
+    }
+    cereal::BinaryOutputArchive fileTreeArchive (os);
+    fileTreeArchive (ft);
     os.close ();
 }
 
@@ -99,6 +113,13 @@ void readDiskIndexNodeCluster () {
     is.close ();
 }
 
-int main () {
-    return 0;
+void readFileTree () {
+    std::ifstream is (VDISK_START_FILE, std::ios::binary);
+    if (!is) {
+        std::cout << "Error : VIRTUAL START DISK can not be opened!" << std::endl;
+        exit (1);
+    }
+    cereal::BinaryInputArchive fileTreeArchive (is);
+    fileTreeArchive (ft);
+    is.close ();
 }
