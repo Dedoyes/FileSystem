@@ -37,6 +37,7 @@ void login (std::string userName, std::string password) {
         }
     }
     userGroup.addNewUser (userName, password);
+    std::cout << "add new user success." << std::endl;
 }
 
 void logout () {

@@ -7,6 +7,6 @@ void formatDisk (std::string diskName);
 
 void login (std::string userName, std::string password);
 
-void logout (std::string userName);
+void logout (void);
 
 #endif

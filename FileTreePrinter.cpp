@@ -9,7 +9,7 @@
 // #include <unordered_map>
 // #include <string>
 #include <iostream>
-#include "FileTreePrinter.h"
+#include "FileTreePrinter.hpp"
 
 void printTree(fileTree& ft, short node, const std::string& prefix, bool isLast) {
     std::cout << prefix

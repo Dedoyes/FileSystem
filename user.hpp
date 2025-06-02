@@ -68,8 +68,8 @@ public :
             return;
         }
         user[userNum] = User (userNum, name, password);
-        userNum++;
         currentUserId = userNum;
+        userNum++;
     }
 };
 

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sstream>
 #include <unistd.h>
 #include "general.hpp"
 #include "IndexNode.hpp"
@@ -9,7 +10,8 @@
 #include "storage.hpp"
 #include "user.hpp"
 #include "utilize.hpp"
-#include  "FileTreePrinter.hpp"
+#include "FileTreePrinter.hpp"
+#include "command.hpp"
 
 short currentUserId = -1;
 std::string fileStr[MAX_BLOCK_NUM];
@@ -42,7 +44,24 @@ int main () {
             address = ft.getFilePath (currentAddress);
         }
         std::cout << address << "@" << name << ":";
-        std::cin >> command;
+        std::getline (std::cin, command);
+        std::istringstream iss (command);
+        std::string opt;
+        iss >> opt;
+        if (opt == "login") {
+            std::string userName;
+            iss >> userName;
+            std::cout << "please input password : ";
+            std::string password;
+            std::cin >> password;
+            login (userName, password);
+            std::cin.ignore ();
+        } else if (opt == "logout") {
+            logout ();
+        } else {
+            std::cout << "don't find this command" << std::endl;
+            continue;
+        }
     } 
     return 0;
 }
