@@ -20,6 +20,19 @@ public :
     void serialize (Archive& ar) {
         ar (inodeAddress, father, deg, son, fileName);
     }
+    std::string getFilePath (short fileIndex) {
+        std::vector <short> tempVec;
+        for (short u = fileIndex; u; u = father[u]) {
+            tempVec.push_back (u);
+        }
+        std::string res = "";
+        for (int i = tempVec.size () - 1; i >= 0; i--) {
+            res += fileName[i];
+            if (i != 0)
+                res += "/";
+        }
+        return res;
+    }
     fileTree () {
         for (int i = 0; i < MAX_BLOCK_NUM; i++) { 
             this->inodeAddress[i] = 0;

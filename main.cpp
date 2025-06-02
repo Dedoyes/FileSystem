@@ -18,6 +18,7 @@ inodeForest forest;
 DiskIndexNodeCluster cluster;
 fileTree ft;
 UserCluster userGroup;
+short currentAddress;
 
 int main () {
     FILE* start_disk = fopen (VDISK_START_FILE, "wb");
@@ -30,8 +31,19 @@ int main () {
     std::cout << "virtual disk init success." << std::endl;
     while (true) {
         std::string command;
-        
-    }
+        std::string name;
+        std::string address;
+        if (currentUserId != -1) {
+            name = userGroup.user[currentUserId].getName ();
+        } 
+        if (currentAddress == 0) {
+            address = "/";
+        } else {
+            address = ft.getFilePath (currentAddress);
+        }
+        std::cout << address << "@" << name << ":";
+        std::cin >> command;
+    } 
     return 0;
 }
 
