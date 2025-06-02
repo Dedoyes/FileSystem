@@ -16,4 +16,8 @@ void readFileTree (void);
 void storageUserGroup (void);
 void readUserGroup (void);
 
+void load (void);
+
+void storage (void);
+
 #endif

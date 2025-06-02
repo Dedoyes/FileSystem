@@ -122,3 +122,19 @@ void readUserGroup () {
     userGroupArchive (userGroup);
     is.close ();
 }
+
+void load () {
+    readSuperBlock ();
+    readFileTree ();
+    readInodeForest ();
+    readUserGroup ();
+    readDiskIndexNodeCluster ();
+}
+
+void storage () {
+    storageSuperBlock ();
+    storageFileTree ();
+    storageInodeForest ();
+    storageUserGroup ();
+    storageDiskIndexNodeCluster ();
+}

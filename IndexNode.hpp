@@ -11,7 +11,6 @@
 #include "./cereal/include/cereal/archives/binary.hpp"
 #include "./cereal/include/cereal/types/string.hpp"
 
-
 extern SuperBlock super;
 
 class DiskIndexNode {

@@ -41,15 +41,35 @@ public :
             std::cout << "Warning : password wrong." << std::endl;
         }
     }
+    inline std::string getName () {
+        return this->name; 
+    }
+    inline std::string getPassword () {
+        return this->password;
+    }
+    inline short getUserId () {
+        return this->userId;
+    }
 };
+
+extern short currentUserId;
 
 class UserCluster {
 public :
+    short userNum;
     User user[MAX_USER_NUM];
-    
     template <class Archive>
     void serialize (Archive& ar) {
-        ar (user);
+        ar (userNum, user);
+    }
+    void addNewUser (std::string name, std::string password) {
+        if (userNum == MAX_USER_NUM) {
+            std::cout << "Warning : user number is max." << std::endl;
+            return;
+        }
+        user[userNum] = User (userNum, name, password);
+        userNum++;
+        currentUserId = userNum;
     }
 };
 

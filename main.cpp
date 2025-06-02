@@ -9,8 +9,9 @@
 #include "storage.hpp"
 #include "user.hpp"
 #include "utilize.hpp"
-#include  "FileTreePrinter.h"
+#include  "FileTreePrinter.hpp"
 
+short currentUserId = -1;
 std::string fileStr[MAX_BLOCK_NUM];
 SuperBlock super;
 inodeForest forest;
@@ -18,33 +19,24 @@ DiskIndexNodeCluster cluster;
 fileTree ft;
 UserCluster userGroup;
 
-// int main () {
-//     FILE* start_disk = fopen (VDISK_START_FILE, "wb");
-//     if (!start_disk) {
-//         perror ("Failed to create virtual start disk");
-//         exit (1);
-//     }
-//     ftruncate (fileno (start_disk), 10 * 1024 * 1024);
-//     fclose (start_disk);
-//     std::cout << "ok" << std::endl;
-//     return 0;
-// }
+int main () {
+    FILE* start_disk = fopen (VDISK_START_FILE, "wb");
+    if (!start_disk) {
+        perror ("Failed to create virtual start disk");
+        exit (1);
+    }
+    ftruncate (fileno (start_disk), 10 * 1024 * 1024);
+    fclose (start_disk);
+    std::cout << "virtual disk init success." << std::endl;
+    while (true) {
+        std::string command;
+        
+    }
+    return 0;
+}
 
-// void printTree(fileTree& ft, short node, const std::string& prefix, bool isLast) {
-//     std::cout << prefix
-//               << (isLast ? "+-- " : "|-- ")
-//               << "Node " << node << " (degree: " << ft.deg[node] << ")"
-//               << std::endl;
-
-//     std::string newPrefix = prefix + (isLast ? "    " : "|   ");
-//     for (size_t i = 0; i < ft.son[node].size(); ++i) {
-//         bool isLastChild = (i == ft.son[node].size() - 1);
-//         printTree(ft, ft.son[node][i], newPrefix, isLastChild);
-//     }
-// }
-
-
-int main() {
+/*
+std::cint main() {
     fileTree ft;
 
     // 构建一个简单的树
@@ -66,3 +58,4 @@ int main() {
 
     return 0;
 }
+*/
