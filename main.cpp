@@ -78,8 +78,18 @@ int main () {
             std::string dirName;
             iss >> dirName;
             cd (dirName);
+        } else if (opt == "open") {
+            std::string fileName;
+            iss >> fileName;
+            open (fileName);
+        } else if (opt == "close") {
+            std::string fileName;
+            iss >> fileName;
+            close (fileName);
         } else if (opt == "shutdown") {
             break;
+        } else if (opt == "lopen") {
+            lopen ();
         } else {
             std::cout << "don't find this command" << std::endl;
             continue;

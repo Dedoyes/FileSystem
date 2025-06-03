@@ -141,10 +141,24 @@ void open (std::string fileName) {
         std::cout << fileName << "is already existed" << std::endl;
         return;
     }
-    short index = ft.findIndex (currentAddress, fileName); 
-    table.storage (absPath, index);
+    short index = ft.findIndex (currentAddress, fileName);
+    if (cluster[index].getType () == REGULAR_FILE) {
+        table.storage (absPath, index);
+    } else {
+        std::cout << fileName << "isn't a regular file" << std::endl;
+    }
 }
 
 void close (std::string fileName) {
-    
+    std::string dirPath = ft.getFilePath (currentAddress);
+    std::string absPath = dirPath + fileName;
+    if (!table.count (absPath)) {
+        std::cout << fileName << "dosn't be opened" << std::endl;
+        return;
+    }
+    table.erase (absPath);
+}
+
+void lopen () {
+    table.print ();
 }

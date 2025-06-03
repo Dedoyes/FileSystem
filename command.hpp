@@ -21,4 +21,6 @@ void open (std::string fileName);
 
 void close (std::string fileName);
 
+void lopen (void);
+
 #endif

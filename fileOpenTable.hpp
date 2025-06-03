@@ -29,6 +29,11 @@ public :
     bool count (std::string s) {
         return fileIndex.count (s);
     }
+    void print () {
+        for (auto x : this->fileIndex) {
+            std::cout << x.first << " " << x.second << std::endl;
+        }
+    }
 };
 
 #endif
