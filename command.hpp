@@ -17,4 +17,8 @@ void mkdir (std::string dirName, bool general);
 
 void cd (std::string dirName);
 
+void open (std::string fileName);
+
+void close (std::string fileName);
+
 #endif

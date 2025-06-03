@@ -6,6 +6,7 @@
 #include "user.hpp"
 #include "IndexNode.hpp"
 #include "utilize.hpp"
+#include "fileOpenTable.hpp"
 
 void formatDisk (std::string diskName) {
     if (diskName == VDISK_START_FILE) {
@@ -82,6 +83,12 @@ void mkdir (std::string dirName, bool general) {
 }
 
 void create (std::string fileName) {
+    for (auto x : ft.son[currentAddress]) {
+        if (ft.fileName[x] == fileName) {
+            std::cout << "Warning : " << fileName << "has been existed!" << std::endl;
+            return;
+        }
+    }
     DiskIndexNode node;
     node.init (currentUserId, REGULAR_FILE, false);
     inodeTree tree;
@@ -123,4 +130,21 @@ void cd (std::string dirName) {
         }
     }
     std::cout << "No such dir" << std::endl;
+}
+
+extern fileOpenTable table;
+
+void open (std::string fileName) {
+    std::string dirPath = ft.getFilePath (currentAddress);
+    std::string absPath = dirPath + fileName;
+    if (table.count (absPath)) {
+        std::cout << fileName << "is already existed" << std::endl;
+        return;
+    }
+    short index = ft.findIndex (currentAddress, fileName); 
+    table.storage (absPath, index);
+}
+
+void close (std::string fileName) {
+    
 }

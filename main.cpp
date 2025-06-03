@@ -11,6 +11,7 @@
 #include "user.hpp"
 #include "utilize.hpp"
 #include "FileTreePrinter.hpp"
+#include "fileOpenTable.hpp"
 #include "command.hpp"
 
 short currentUserId = -1;
@@ -21,6 +22,7 @@ DiskIndexNodeCluster cluster;
 fileTree ft;
 UserCluster userGroup;
 short currentAddress;
+fileOpenTable table;
 
 int main () {
     FILE* start_disk = fopen (VDISK_START_FILE, "wb");
@@ -45,6 +47,7 @@ int main () {
             address = "/";
         } else {
             address = ft.getFilePath (currentAddress);
+            std::cout << "address = " << address << std::endl;
         }
         std::cout << address << "@" << name << ":";
         std::getline (std::cin, command);
@@ -75,10 +78,13 @@ int main () {
             std::string dirName;
             iss >> dirName;
             cd (dirName);
+        } else if (opt == "shutdown") {
+            break;
         } else {
             std::cout << "don't find this command" << std::endl;
             continue;
         }
+        std::cout << "currentAddress = " << currentAddress << std::endl;
     } 
     return 0;
 }
