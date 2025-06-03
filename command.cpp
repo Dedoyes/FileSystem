@@ -65,6 +65,15 @@ extern DiskIndexNodeCluster cluster;
 
 void mkdir (std::string dirName, bool general) {
     std::cout << "in mkdir function." << std::endl;
+    
+    // 检查当前目录下是否存在同名子目录
+    for (auto x : ft.son[currentAddress]) {
+        if (ft.fileName[x] == dirName && cluster[x].getType() == DIRETORY) {
+            std::cout << "Warning: Directory with the same name already exists!" << std::endl;
+            return;
+        }
+    }
+
     DiskIndexNode node;
     node.init (currentUserId, DIRETORY, general);
     std::cout << "ok" << std::endl;
@@ -114,21 +123,67 @@ void ls () {
     std::cout << std::endl;
 }
 
-void cd (std::string dirName) {
-    if (dirName == "..") {
+void cd(std::string path) {
+    if (path == "..") {
         if (!currentAddress)
             return;
         currentAddress = ft.father[currentAddress];
         return;
     }
-    for (auto x : ft.son[currentAddress]) {
-        if (cluster[x].getType () != DIRETORY)
-            continue;
-        if (ft.fileName[x] == dirName && hasRead (cluster[x].getPermission(currentUserId))) {
-            currentAddress = x;
-            return;
+
+    // 判断是否是绝对路径
+    bool isAbsolute = !path.empty() && path[0] == '/';
+    short addr = currentAddress;
+
+    if (isAbsolute) {
+        // 如果是绝对路径，从根目录开始
+        addr = 0; // 假设根目录地址为 0
+        path = path.substr(1); // 去除开头的 '/'
+    }
+
+    std::vector<std::string> tokens;
+    std::istringstream ss(path);
+    std::string token;
+
+    // 拆分路径
+    while (std::getline(ss, token, '/')) {
+        if (!token.empty()) {
+            tokens.push_back(token);
         }
     }
+
+    if (tokens.empty()) {
+        // 单层目录切换（原逻辑）
+        for (auto x : ft.son[addr]) {
+            if (cluster[x].getType() == DIRETORY &&
+                ft.fileName[x] == path &&
+                hasRead(cluster[x].getPermission(currentUserId))) {
+                currentAddress = x;
+                return;
+            }
+        }
+    } else {
+        // 多级路径切换
+        for (const auto& dir : tokens) {
+            bool found = false;
+            for (auto x : ft.son[addr]) {
+                if (cluster[x].getType() == DIRETORY &&
+                    ft.fileName[x] == dir &&
+                    hasRead(cluster[x].getPermission(currentUserId))) {
+                    addr = x;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                std::cout << "No such dir" << std::endl;
+                return;
+            }
+        }
+        currentAddress = addr;
+        return;
+    }
+
     std::cout << "No such dir" << std::endl;
 }
 
