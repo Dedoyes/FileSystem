@@ -17,11 +17,7 @@ public :
     void serialize (Archive& ar) {
         ar (remainIndexAddress, remainBlcokAddress);
     }
-    //inline int memorySize () {
-    //    int structSize = sizeof (SuperBlock);
-    //    int heapSize = sizeof (int) * remainIndexAddress.capacity ();
-    //}
-    void init () {
+    SuperBlock () {
         for (int i = 0; i < MAX_INDEX_NODE_NUM; i++)
             remainIndexAddress.insert (i);
         for (int i = 0; i < MAX_BLOCK_NUM; i++) 
@@ -55,6 +51,7 @@ public :
             std::cout << "Error : this block address is not free!" << std::endl;
             return;
         }
+        remainBlcokAddress.erase (it);
     }
     inline int FreeIndexSum () {
         return (int) this->remainIndexAddress.size ();

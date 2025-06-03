@@ -28,6 +28,9 @@ public :
         ar (ownerId, fileType, fileStoragePermission, fileAddress,
             fileLength, fileConnectSum, lastChangeTime);
     }
+    inline int getIndex () {
+        return this->fileAddress;
+    }
     DiskIndexNode () {
         this->ownerId = 0;
         this->fileType = 0;
@@ -39,7 +42,7 @@ public :
         this->lastChangeTime = Time ();
     }
     void init (short UserId) {
-        if (super.hasFreeIndexSpace ()) {
+        if (!super.hasFreeIndexSpace ()) {
             std::cout << "Error : there is no available disk room!" << std::endl;
             exit (1);
         }
@@ -49,6 +52,7 @@ public :
         this->fileType = REGULAR_FILE;
         for (int i = 0; i < MAX_USER_NUM; i++) 
             this->fileStoragePermission[i] = "";
+        this->fileStoragePermission[UserId] = "rwx";
         fileConnectSum = 0;
         lastChangeTime = Time ();
     }

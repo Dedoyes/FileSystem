@@ -58,6 +58,12 @@ int main () {
             std::cin.ignore ();
         } else if (opt == "logout") {
             logout ();
+        } else if (opt == "ls") {
+            ls ();
+        } else if (opt == "create") {
+            std::string fileName;
+            iss >> fileName;
+            create (fileName);
         } else {
             std::cout << "don't find this command" << std::endl;
             continue;

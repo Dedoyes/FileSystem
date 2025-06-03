@@ -1,6 +1,10 @@
 #include "command.hpp"
+#include "SuperBlock.hpp"
+#include "fileTree.hpp"
 #include "general.hpp"
+#include "inodeTree.hpp"
 #include "user.hpp"
+#include "IndexNode.hpp"
 
 void formatDisk (std::string diskName) {
     if (diskName == VDISK_START_FILE) {
@@ -47,4 +51,36 @@ void logout () {
     }
     currentUserId = -1;
     std::cout << "log out success." << std::endl;
+}
+
+extern int currentAddress;
+extern fileTree ft;
+extern SuperBlock super;
+extern inodeForest forest;
+extern DiskIndexNodeCluster cluster;
+
+void create (std::string fileName) {
+    DiskIndexNode node;
+    node.init (currentUserId);
+    inodeTree tree;
+    int index = node.getIndex ();
+    int freeblock = super.askFreeBlock ();
+    std::cout << "index = " << index << std::endl;
+    std::cout << "freeblock = " << freeblock << std::endl;
+    super.occupyBlock (freeblock);
+    tree.assignAddress (freeblock);
+    forest.insert (tree, index);
+    cluster.insert (node);
+    ft.addNode (index, fileName);
+    ft.connect (currentAddress, index);
+}
+
+void ls () {
+    for (auto x : ft.son[currentAddress]) {
+        std::cout << ft.fileName[x];
+        if (ft.deg[x] != 1) 
+            std::cout << "/";
+        std::cout << " ";
+    }
+    std::cout << std::endl;
 }

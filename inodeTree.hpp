@@ -12,19 +12,22 @@
 
 class inodeTree {
 private :
-    std::map <short, std::vector <short> > blockAddress;
+    std::vector <short> blockAddress;
 public :
     template <class Archive>
     void serialize (Archive& ar) {
         ar (blockAddress);
     }
-    void assignAddress (short fileId, short blockId) {
-        if (!blockAddress.count (fileId)) {
-            std::cout << "Warning : this file id is not existed." << std::endl;
+    inodeTree () {
+        blockAddress.clear ();
+    }
+    void assignAddress (short blockId) {
+        if (blockId < 0 || blockId >= MAX_INDEX_NODE_NUM) {
+            std::cout << "Warning : blockId was illegal!" << std::endl;
             return;
         }
         bool flag = true;
-        for (auto x : blockAddress[fileId]) {
+        for (auto x : blockAddress) {
             if (x == blockId) {
                 flag = false;
                 break;
@@ -34,31 +37,25 @@ public :
             std::cout << "Warning : this file has repeat block address." << std::endl;
             return;
         }
-        blockAddress[fileId].push_back (blockId);
+        blockAddress.push_back (blockId);
     }
-    void popAddress (short fileId) {
-        if (!blockAddress.count (fileId)) {
-            std::cout << "Warning : this file id is not existed." << std::endl;
+    void popAddress () {
+        if (blockAddress.empty ()) {
+            std::cout << "Warning : block address array is empty." << std::endl;
             return;
         }
-        if (blockAddress[fileId].empty ()) {
-            std::cout << "Warning : this file has no block." << std::endl;
-            return;
-        }
-        blockAddress[fileId].pop_back ();
+        blockAddress.pop_back ();
     }
 };
 
 class inodeForest {
 private :
     bool vis[MAX_INDEX_NODE_NUM];
-    int current;
-    int usedNum;
     inodeTree forest[MAX_INDEX_NODE_NUM];
 public :
     template <class Archive>
     void serialize (Archive& ar) {
-        ar (forest);
+        ar (vis, forest);
     }
     inodeTree& operator [] (int index) {
         if (index < 0 || index >= MAX_INDEX_NODE_NUM) {
@@ -71,24 +68,17 @@ public :
         }
         return forest[index];
     }
-    void insert (inodeTree tree) {
-        if (usedNum == MAX_INDEX_NODE_NUM) {
-            std::cout << "Warning : inode Forest was full." << std::endl;
+    void insert (inodeTree tree, short index) {
+        if (index < 0 || index >= MAX_INDEX_NODE_NUM) {
+            std::cout << "Warning : Subscipt is not existed." << std::endl;
             return;
         }
-        if (vis[current]) {
-            std::cout << "Warning : this place is occupied." << std::endl;
+        if (vis[index]) {
+            std::cout << "Warning : this file isn't empty." << std::endl;
             return;
         }
-        usedNum++;
-        vis[current] = true;
-        forest[current] = tree;
-        for (int i = 0; i < MAX_INDEX_NODE_NUM; i++) {
-            if (!vis[i]) {
-                current = i;
-                break;
-            }
-        }
+        vis[index] = true;
+        forest[index] = tree;
     }
     void erase (int index) {
         if (index < 0 || index >= MAX_INDEX_NODE_NUM) {
@@ -100,12 +90,6 @@ public :
             return;
         }
         vis[index] = false;
-        for (int i = 0; i < MAX_INDEX_NODE_NUM; i++) {
-            if (!vis[i]) {
-                current = i;
-                break;
-            }
-        }
     }
 };
 

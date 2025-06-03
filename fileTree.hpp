@@ -11,14 +11,20 @@
 
 class fileTree {
 public :
-    short inodeAddress[MAX_BLOCK_NUM];
     short father[MAX_BLOCK_NUM];
     short deg[MAX_BLOCK_NUM];
     std::vector <short> son[MAX_BLOCK_NUM];
     std::string fileName[MAX_BLOCK_NUM];
     template <class Archive> 
     void serialize (Archive& ar) {
-        ar (inodeAddress, father, deg, son, fileName);
+        ar (father, deg, son, fileName);
+    }
+    void addNode (short fileIndex, std::string name) {
+        if (fileIndex < 0 || fileIndex >= MAX_BLOCK_NUM) {
+            std::cout << "Warning : file index is illegal." << std::endl;
+            return;
+        }
+        fileName[fileIndex] = name;
     }
     std::string getFilePath (short fileIndex) {
         std::vector <short> tempVec;
@@ -35,7 +41,6 @@ public :
     }
     fileTree () {
         for (int i = 0; i < MAX_BLOCK_NUM; i++) { 
-            this->inodeAddress[i] = 0;
             this->father[i] = 0;
             this->son[i].clear ();
             this->deg[i] = 0;
