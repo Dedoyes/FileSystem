@@ -5,6 +5,7 @@
 #include "inodeTree.hpp"
 #include "user.hpp"
 #include "IndexNode.hpp"
+#include "utilize.hpp"
 
 void formatDisk (std::string diskName) {
     if (diskName == VDISK_START_FILE) {
@@ -16,6 +17,7 @@ void formatDisk (std::string diskName) {
     }
 }
 
+extern short currentAddress;
 extern short currentUserId;
 extern UserCluster userGroup; 
 
@@ -42,6 +44,7 @@ void login (std::string userName, std::string password) {
     }
     userGroup.addNewUser (userName, password);
     std::cout << "add new user success." << std::endl;
+    currentAddress = 0;
 }
 
 void logout () {
@@ -51,17 +54,36 @@ void logout () {
     }
     currentUserId = -1;
     std::cout << "log out success." << std::endl;
+    currentAddress = 0;
 }
 
-extern int currentAddress;
 extern fileTree ft;
 extern SuperBlock super;
 extern inodeForest forest;
 extern DiskIndexNodeCluster cluster;
 
+void mkdir (std::string dirName, bool general) {
+    std::cout << "in mkdir function." << std::endl;
+    DiskIndexNode node;
+    node.init (currentUserId, DIRETORY, general);
+    std::cout << "ok" << std::endl;
+    inodeTree tree;
+    int index = node.getIndex ();
+    int freeblock = super.askFreeBlock ();
+    std::cout << "index = " << index << std::endl;
+    std::cout << "freeblock = " << freeblock << std::endl;
+    super.occupyBlock (freeblock);
+    tree.assignAddress (freeblock);
+    forest.insert (tree, index);
+    cluster.insert (node);
+    ft.addNode (index, dirName);
+    if (!general)
+        ft.connect (currentAddress, index);
+}
+
 void create (std::string fileName) {
     DiskIndexNode node;
-    node.init (currentUserId);
+    node.init (currentUserId, REGULAR_FILE, false);
     inodeTree tree;
     int index = node.getIndex ();
     int freeblock = super.askFreeBlock ();
@@ -83,4 +105,22 @@ void ls () {
         std::cout << " ";
     }
     std::cout << std::endl;
+}
+
+void cd (std::string dirName) {
+    if (dirName == "..") {
+        if (!currentAddress)
+            return;
+        currentAddress = ft.father[currentAddress];
+        return;
+    }
+    for (auto x : ft.son[currentAddress]) {
+        if (cluster[x].getType () != DIRETORY)
+            continue;
+        if (ft.fileName[x] == dirName && hasRead (cluster[x].getPermission(currentUserId))) {
+            currentAddress = x;
+            return;
+        }
+    }
+    std::cout << "No such dir" << std::endl;
 }

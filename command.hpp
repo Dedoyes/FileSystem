@@ -13,4 +13,8 @@ void create (std::string fileName);
 
 void ls (void);
 
+void mkdir (std::string dirName, bool general);
+
+void cd (std::string dirName);
+
 #endif

@@ -55,21 +55,21 @@ std::string reguPermission (std::string s) {
     return res;
 }
 
-inline bool hasRead (std::string s) {
+bool hasRead (std::string s) {
     for (int i = 0; i < s.size (); i++)
         if (s[i] == 'r')
             return true;
     return false;
 }
 
-inline bool hasWrite (std::string s) {
+bool hasWrite (std::string s) {
     for (int i = 0; i < s.size (); i++)
         if (s[i] == 'w')
             return true;
     return false;
 }
 
-inline bool hasExecute (std::string s) {
+bool hasExecute (std::string s) {
     for (int i = 0; i < s.size (); i++)
         if (s[i] == 'x')
             return true;

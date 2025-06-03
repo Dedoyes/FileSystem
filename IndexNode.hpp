@@ -28,6 +28,12 @@ public :
         ar (ownerId, fileType, fileStoragePermission, fileAddress,
             fileLength, fileConnectSum, lastChangeTime);
     }
+    inline short getType () {
+        return fileType;
+    }
+    inline std::string getPermission (short userId) {
+        return fileStoragePermission[userId];
+    }
     inline int getIndex () {
         return this->fileAddress;
     }
@@ -41,7 +47,7 @@ public :
         this->fileConnectSum = 0;
         this->lastChangeTime = Time ();
     }
-    void init (short UserId) {
+    void init (short UserId, short type, bool general) {
         if (!super.hasFreeIndexSpace ()) {
             std::cout << "Error : there is no available disk room!" << std::endl;
             exit (1);
@@ -49,10 +55,15 @@ public :
         this->fileAddress = super.askFreeIndex ();
         super.occupyIndex (this->fileAddress);
         this->ownerId = UserId;
-        this->fileType = REGULAR_FILE;
-        for (int i = 0; i < MAX_USER_NUM; i++) 
-            this->fileStoragePermission[i] = "";
-        this->fileStoragePermission[UserId] = "rwx";
+        this->fileType = type;
+        if (!general) {
+            for (int i = 0; i < MAX_USER_NUM; i++) 
+                this->fileStoragePermission[i] = "";
+            this->fileStoragePermission[UserId] = "rwx";
+        } else {
+            for (int i = 0; i < MAX_USER_NUM; i++) 
+                this->fileStoragePermission[i] = "rwx";
+        }
         fileConnectSum = 0;
         lastChangeTime = Time ();
     }
@@ -101,6 +112,17 @@ public :
         usedNum = 0;
         for (int i = 0; i < MAX_INDEX_NODE_NUM; i++)
             cluster[i] = DiskIndexNode ();
+    }
+    DiskIndexNode& operator [] (short index) {
+        if (index < 0 || index >= MAX_INDEX_NODE_NUM) {
+            std::cout << "Error : Subscript was illegal!" << std::endl;
+            exit (1);
+        }
+        if (!vis[index]) {
+            std::cout << "Error : this index block was empty" << std::endl;
+            exit (1);
+        }
+        return cluster[index];
     }
     DiskIndexNode& operator [] (int index) {
         if (index < 0 || index >= MAX_INDEX_NODE_NUM) {

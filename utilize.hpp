@@ -15,10 +15,10 @@ size_t estimate_set_memory (const std::set <T> &s);
 
 std::string reguPermission (std::string s);
 
-inline bool hasRead (std::string s);
+bool hasRead (std::string s);
 
-inline bool hasWrite (std::string s);
+bool hasWrite (std::string s);
 
-inline bool hasExecute (std::string s);
+bool hasExecute (std::string s);
 
 #endif

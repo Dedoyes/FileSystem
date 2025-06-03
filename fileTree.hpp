@@ -8,6 +8,9 @@
 #include "./cereal/include/cereal/archives/binary.hpp"
 #include "./cereal/include/cereal/types/vector.hpp"
 #include "./general.hpp"
+#include "./IndexNode.hpp"
+
+extern DiskIndexNodeCluster cluster;
 
 class fileTree {
 public :
@@ -24,6 +27,7 @@ public :
             std::cout << "Warning : file index is illegal." << std::endl;
             return;
         }
+
         fileName[fileIndex] = name;
     }
     std::string getFilePath (short fileIndex) {
@@ -34,8 +38,7 @@ public :
         std::string res = "";
         for (int i = tempVec.size () - 1; i >= 0; i--) {
             res += fileName[i];
-            if (i != 0)
-                res += "/";
+            res += "/";
         }
         return res;
     }

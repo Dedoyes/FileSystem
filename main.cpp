@@ -31,6 +31,9 @@ int main () {
     ftruncate (fileno (start_disk), 10 * 1024 * 1024);
     fclose (start_disk);
     std::cout << "virtual disk init success." << std::endl;
+   
+    mkdir ("", true);
+
     while (true) {
         std::string command;
         std::string name;
@@ -64,6 +67,14 @@ int main () {
             std::string fileName;
             iss >> fileName;
             create (fileName);
+        } else if (opt == "mkdir") {
+            std::string dirName;
+            iss >> dirName;
+            mkdir (dirName, false);
+        } else if (opt == "cd") {
+            std::string dirName;
+            iss >> dirName;
+            cd (dirName);
         } else {
             std::cout << "don't find this command" << std::endl;
             continue;
