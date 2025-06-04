@@ -6,9 +6,9 @@
 #include <string>
 #include "general.hpp"
 
-void write_block (int block_number, const void* data);
+void write_block (int block_number, int offset, const void* data);
 
-void read_block (int block_number, void* buffer);
+void read_block (int block_number, int offset, void* buffer, int len);
 
 template <typename T>
 size_t estimate_set_memory (const std::set <T> &s);

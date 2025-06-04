@@ -4,7 +4,7 @@
 #include "general.hpp"
 #include "utilize.hpp"
 
-void write_block (int block_number, const void* data) {
+void write_block (int block_number, int offset, const void* data) {
     if (block_number < 0 || block_number >= MAX_BLOCK_NUM) {
         std::cout << "Error : Block index is illegal!" << std::endl;
         exit (1);
@@ -14,19 +14,19 @@ void write_block (int block_number, const void* data) {
         perror ("Failed to open virtual disk!");
         exit (1);
     }
-    fseek (disk, block_number * BLOCK_SIZE, SEEK_SET);
+    fseek (disk, block_number * BLOCK_SIZE + offset, SEEK_SET);
     fwrite (data, 1, BLOCK_SIZE, disk);
     fclose (disk);
 }
 
-void read_block (int block_number, void* buffer) {
+void read_block (int block_number, int offset, void* buffer, int len) {
     FILE* disk = fopen (VDISK_FILE, "rb");
     if (!disk) {
         perror ("Failed to open virtual disk!");
         exit (1);
     }
-    fseek (disk, block_number * BLOCK_SIZE, SEEK_SET);
-    fread (buffer, 1, BLOCK_SIZE, disk);
+    fseek (disk, block_number * BLOCK_SIZE + offset, SEEK_SET);
+    fread (buffer, 1, len, disk);
     fclose (disk);
 }
 

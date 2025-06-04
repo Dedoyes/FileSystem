@@ -40,6 +40,7 @@ int main () {
         std::string command;
         std::string name;
         std::string address;
+        //std::cout << "ok!" << std::endl;
         if (currentUserId != -1) {
             name = userGroup.user[currentUserId].getName ();
         } 
@@ -90,36 +91,25 @@ int main () {
             break;
         } else if (opt == "lopen") {
             lopen ();
+        } else if (opt == "format") {
+            formatDisk ();
+            varInit ();
+        } else if (opt == "write") {
+            std::string fileName, content;
+            iss >> fileName;
+            std::cout << "please input what you want to write : " << std::endl;
+            std::getline (std::cin, content);
+            writeFile (fileName, content);
+        } else if (opt == "read") {
+            std::string fileName, content;
+            iss >> fileName;
+            readFile (fileName);
         } else {
             std::cout << "don't find this command" << std::endl;
             continue;
         }
-        std::cout << "currentAddress = " << currentAddress << std::endl;
+        //std::cout << "currentAddress = " << currentAddress << std::endl;
     } 
     return 0;
 }
 
-/*
-std::cint main() {
-    fileTree ft;
-
-    // 构建一个简单的树
-    ft.connect(0, 1);
-    ft.connect(0, 2);
-    ft.connect(1, 3);
-    ft.connect(1, 4);
-    ft.connect(2, 5);
-
-    std::cout << "FileTree Structure:" << std::endl;
-    printTree(ft, 0, "", true);
-
-    // 演示 cut
-    std::cout << "Cut edge (1 -> 4)" << std::endl;
-    ft.cut(1, 4);
-
-    std::cout << "FileTree Structure after cut:" << std::endl;
-    printTree(ft, 0, "", true);
-
-    return 0;
-}
-*/

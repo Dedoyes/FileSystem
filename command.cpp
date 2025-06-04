@@ -1,3 +1,5 @@
+#include <fstream>
+#include <unistd.h>
 #include "command.hpp"
 #include "SuperBlock.hpp"
 #include "fileTree.hpp"
@@ -8,19 +10,112 @@
 #include "utilize.hpp"
 #include "fileOpenTable.hpp"
 
-void formatDisk (std::string diskName) {
-    if (diskName == VDISK_START_FILE) {
-        
-    } else if (diskName == VDISK_FILE) {
+extern short currentUserId;
+extern std::string fileStr[MAX_BLOCK_NUM];
+extern SuperBlock super;
+extern inodeForest forest;
+extern DiskIndexNodeCluster cluster;
+extern fileTree ft;
+extern UserCluster userGroup;
+extern short currentAddress;
+extern fileOpenTable table;
 
-    } else {
-        std::cout << "Warning : No such disk." << std::endl;
+void writeFile (std::string fileName, std::string content) { 
+    std::string dirPath = ft.getFilePath (currentAddress);
+    std::string absPath = dirPath + fileName;
+    if (!table.count (absPath)) {
+        open (fileName);
     }
+    int index = table.getIndex (absPath);
+    inodeTree tree = forest[index];
+    int len = cluster[index].getFileLength ();
+    int rearLen = len % BLOCK_SIZE;
+    bool flag = true;
+    for (int l = 0, r = 0; l < content.size (); l = r) {
+        int blockId = tree.lastAddress ();
+        int start = flag ? rearLen : 0;
+        int end = BLOCK_SIZE - 1;
+        int freeLen = end - start + 1;
+        if (freeLen < content.size () - 1 - l + 1) {
+            r = l + freeLen;
+            write_block (blockId, start, content.substr (l, r).c_str ());
+            blockId = super.askFreeBlock ();
+            super.occupyBlock (blockId);
+            tree.assignAddress (blockId);
+        } else {
+            r = content.size ();
+            write_block (blockId, start, content.substr (l, r).c_str ());
+        }
+    }
+    cluster[index].changeFileLength (len + content.size ());
 }
 
-extern short currentAddress;
-extern short currentUserId;
-extern UserCluster userGroup; 
+void readFile (std::string fileName) {
+    std::string dirPath = ft.getFilePath (currentAddress);
+    std::string absPath = dirPath + fileName;
+    if (!table.count (absPath)) {
+        open (fileName);
+    }
+    int index = table.getIndex (absPath);
+    inodeTree tree = forest[index];
+    int fileLen = cluster[index].getFileLength ();
+    std::cout << "fileLen = " << fileLen << std::endl;
+    std::string res = "";
+    if (fileLen == 0) {
+        std::cout << std::endl;
+        return;
+    }
+    for (int i = 0; i < tree.blockAddress.size (); i++) {
+        auto x = tree.blockAddress[i];
+        int len = BLOCK_SIZE;
+        if (i == tree.blockAddress.size () - 1) {
+            len = fileLen % BLOCK_SIZE;
+            if (len == 0) 
+                len = BLOCK_SIZE;
+        }
+        std::cout << "len = " << len << std::endl;
+        std::vector <char> tempStr (len);
+        read_block (x, 0, tempStr.data (), len);
+        res.append (tempStr.begin (), tempStr.end ());
+    }
+    std::cout << res << std::endl;
+}
+
+void varInit () {
+    currentUserId = -1;
+    for (int i = 0; i < MAX_BLOCK_NUM; i++)
+        fileStr[i] = "";
+    super = SuperBlock ();
+    forest = inodeForest ();
+    cluster = DiskIndexNodeCluster ();
+    ft = fileTree ();
+    userGroup = UserCluster ();
+    currentAddress = 0;
+    table = fileOpenTable ();
+    mkdir ("", true);
+}
+
+void formatDisk () {
+    std::ofstream ofs (VDISK_START_FILE, std::ios::trunc);
+    FILE* start_disk = fopen (VDISK_START_FILE, "wb");
+    if (!start_disk) {
+        perror ("Failed to create virtual start disk");
+        exit (1);
+    }
+    ftruncate (fileno (start_disk), START_DISK_SIZE);
+    fclose (start_disk);
+    varInit ();
+    std::cout << "virtual disk format success." << std::endl;
+    std::ofstream _ofs (VDISK_FILE, std::ios::trunc);
+    FILE* disk = fopen (VDISK_FILE, "wb");
+    if (!disk) {
+        perror ("Failed to create virtual data disk");
+        exit (1);
+    }
+    ftruncate (fileno (disk), DATA_DISK_SIZE);
+    fclose (disk);
+    std::cout << "data disk format success." << std::endl; 
+}
 
 void login (std::string userName, std::string password) {
     if (currentUserId != -1) {
@@ -58,22 +153,13 @@ void logout () {
     currentAddress = 0;
 }
 
-extern fileTree ft;
-extern SuperBlock super;
-extern inodeForest forest;
-extern DiskIndexNodeCluster cluster;
-
 void mkdir (std::string dirName, bool general) {
-    std::cout << "in mkdir function." << std::endl;
-    
-    // 检查当前目录下是否存在同名子目录
     for (auto x : ft.son[currentAddress]) {
         if (ft.fileName[x] == dirName && cluster[x].getType() == DIRETORY) {
             std::cout << "Warning: Directory with the same name already exists!" << std::endl;
             return;
         }
     }
-
     DiskIndexNode node;
     node.init (currentUserId, DIRETORY, general);
     std::cout << "ok" << std::endl;
@@ -186,8 +272,6 @@ void cd(std::string path) {
 
     std::cout << "No such dir" << std::endl;
 }
-
-extern fileOpenTable table;
 
 void open (std::string fileName) {
     std::string dirPath = ft.getFilePath (currentAddress);

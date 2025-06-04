@@ -3,7 +3,9 @@
 
 #include <string>
 
-void formatDisk (std::string diskName);
+void varInit (void);
+
+void formatDisk (void);
 
 void login (std::string userName, std::string password);
 
@@ -22,5 +24,9 @@ void open (std::string fileName);
 void close (std::string fileName);
 
 void lopen (void);
+
+void writeFile (std::string fileName, std::string content);
+
+void readFile (std::string fileName);
 
 #endif

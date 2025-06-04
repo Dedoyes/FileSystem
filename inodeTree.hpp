@@ -11,12 +11,14 @@
 #include "./cereal/include/cereal/types/vector.hpp"
 
 class inodeTree {
-private :
-    std::vector <short> blockAddress;
 public :
+    std::vector <short> blockAddress;
     template <class Archive>
     void serialize (Archive& ar) {
         ar (blockAddress);
+    }
+    short lastAddress () {
+        return blockAddress[blockAddress.size () - 1];
     }
     inodeTree () {
         blockAddress.clear ();
