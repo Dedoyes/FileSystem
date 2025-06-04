@@ -20,7 +20,43 @@ extern UserCluster userGroup;
 extern short currentAddress;
 extern fileOpenTable table;
 
+void chmod (std::string fileName, short newId, std::string newPermission) {
+    bool flag = false;
+    for (auto x : ft.son[currentAddress]) {
+        if (ft.fileName[x] == fileName) {
+            flag = true;
+            break;
+        }
+    }
+    if (!flag) {
+        std::cout << "Warning : no such file." << std::endl;
+        return;
+    }
+    std::string dirPath = ft.getFilePath (currentAddress);
+    std::string absPath = dirPath + fileName;
+    if (!table.count (absPath)) {
+        open (fileName);
+    }
+    int index = table.getIndex (absPath);
+    if (cluster[index].getOwnerId () != currentUserId) {
+        std::cout << "Sorry, you don't have permission :(" << std::endl;
+        return;
+    }
+    cluster[index].changeStoragePermission (newPermission, newId, currentUserId);
+}
+
 void writeFile (std::string fileName, std::string content) {
+    bool flag = false;
+    for (auto x : ft.son[currentAddress]) {
+        if (ft.fileName[x] == fileName && cluster[x].getType () == REGULAR_FILE) {
+            flag = true;
+            break;
+        } 
+    }
+    if (!flag) {
+        std::cout << "Warning : no such file." << std::endl;
+        return;
+    }
     std::string dirPath = ft.getFilePath (currentAddress);
     std::string absPath = dirPath + fileName;
     if (!table.count (absPath)) {
@@ -34,7 +70,7 @@ void writeFile (std::string fileName, std::string content) {
     inodeTree tree = forest[index];
     int len = cluster[index].getFileLength ();
     int rearLen = len % BLOCK_SIZE;
-    bool flag = true;
+    flag = true;
     for (int l = 0, r = 0; l < content.size (); l = r) {
         int blockId = tree.lastAddress ();
         int start = flag ? rearLen : 0;
@@ -56,6 +92,17 @@ void writeFile (std::string fileName, std::string content) {
 }
 
 void readFile (std::string fileName) {
+    bool flag = false;
+    for (auto x : ft.son[currentAddress]) {
+        if (ft.fileName[x] == fileName && cluster[x].getType () == REGULAR_FILE) {
+            flag = true;
+            break;
+        }
+    }
+    if (!flag) {
+        std::cout << "Warning : no such file" << std::endl;
+        return;
+    }
     std::string dirPath = ft.getFilePath (currentAddress);
     std::string absPath = dirPath + fileName;
     if (!table.count (absPath)) {
@@ -98,7 +145,7 @@ void remove (std::string fileName) {
     }
     int index = -1;
     for (auto x : ft.son[currentAddress]) {
-        if (ft.fileName[x] == fileName) {
+        if (ft.fileName[x] == fileName && cluster[x].getType () == REGULAR_FILE) {
             index = x;
             break;
         }
@@ -118,6 +165,55 @@ void remove (std::string fileName) {
     forest.erase (index);
     ft.cut (currentAddress, index);
     ft.fileName[index] = "";
+}
+
+void removeDir (std::string dirName) {
+    bool flag = false;
+    for (auto x : ft.son[currentAddress]) {
+        if (ft.fileName[x] == dirName && cluster[x].getType () == DIRETORY) {
+            flag = true;
+            break;
+        }
+    }
+    if (!flag) {
+        std::cout << "Warning : No such directory." << std::endl;
+        return;
+    }
+    std::string dirPath = ft.getFilePath (currentAddress);
+    std::string absPath = dirPath + dirName;
+    int index = ft.findIndex (currentAddress, dirName);
+    if (!hasExecute (cluster[index].getPermission (currentUserId))) {
+        std::cout << "Sorry, you don't have permission :(" << std::endl;
+    }
+    if (cluster[index].getType () == DIRETORY) {
+        remove_rf (index);
+    } else {
+        std::cout << "Warning : this file isn't directory." << std::endl;
+    }
+}
+
+void remove_rf (short index) {
+    std::cout << "remove_rf " << index << std::endl;
+    std::vector <short> vec;
+    vec.clear ();
+    for (auto x : ft.son[index]) 
+        vec.push_back (x);
+    for (auto x : vec) 
+        remove_rf (x);
+    if (cluster[index].getType () == REGULAR_FILE) {
+        std::string filePath = ft.getFilePath (index);
+        if (table.count (filePath)) {
+            table.erase (filePath);
+        }
+    }
+    inodeTree& tree = forest[index];
+    for (auto x : tree.blockAddress) {
+        super.realeaseBlockAddress (x);
+    }
+    super.realeaseIndexAddress (index);
+    ft.cut (ft.father[index], index);
+    ft.fileName[index] = "";
+    forest.erase (index);
 }
 
 void varInit () {

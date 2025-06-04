@@ -31,4 +31,8 @@ void readFile (std::string fileName);
 
 void remove (std::string fileName);
 
+void remove_rf (short index);
+
+void removeDir (std::string dirName);
+
 #endif

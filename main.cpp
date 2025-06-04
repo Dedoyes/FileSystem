@@ -109,6 +109,10 @@ int main () {
             std::string fileName;
             iss >> fileName;
             remove (fileName);
+        } else if (opt == "rmdir") {
+            std::string dirName;
+            iss >> dirName;
+            removeDir (dirName);
         } else {
             std::cout << "don't find this command" << std::endl;
             continue;

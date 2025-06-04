@@ -40,7 +40,6 @@ public :
             std::cout << "Warning : file index is illegal." << std::endl;
             return;
         }
-
         fileName[fileIndex] = name;
     }
     short findIndex (short dirIndex, std::string findName) {

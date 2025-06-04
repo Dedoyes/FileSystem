@@ -28,6 +28,9 @@ public :
         ar (ownerId, fileType, fileStoragePermission, fileAddress,
             fileLength, fileConnectSum, lastChangeTime);
     }
+    inline short getOwnerId () {
+        return ownerId;
+    }
     inline void changeFileLength (int newLength) {
         fileLength = newLength;
     }
