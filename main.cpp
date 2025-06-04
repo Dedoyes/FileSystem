@@ -13,6 +13,7 @@
 #include "FileTreePrinter.hpp"
 #include "fileOpenTable.hpp"
 #include "command.hpp"
+#include <conio.h>
 
 short currentUserId = -1;
 std::string fileStr[MAX_BLOCK_NUM];
@@ -23,6 +24,9 @@ fileTree ft;
 UserCluster userGroup;
 short currentAddress;
 fileOpenTable table;
+
+// 自定义 my_getline 方法
+
 
 int main () {
     std::cout << "Do you want a new start ?" << std::endl;
@@ -99,7 +103,8 @@ int main () {
             std::string fileName, content;
             iss >> fileName;
             std::cout << "please input what you want to write : " << std::endl;
-            std::getline (std::cin, content);
+            my_getline(content);
+            std::cout << "content = " << content << std::endl;
             writeFile (fileName, content);
         } else if (opt == "read") {
             std::string fileName, content;

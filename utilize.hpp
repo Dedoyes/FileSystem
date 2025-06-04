@@ -4,7 +4,9 @@
 #include <iostream>
 #include <set>
 #include <string>
+#include <conio.h>
 #include "general.hpp"
+
 
 void write_block (int block_number, int offset, const void* data);
 
@@ -20,5 +22,7 @@ bool hasRead (std::string s);
 bool hasWrite (std::string s);
 
 bool hasExecute (std::string s);
+
+void my_getline(std::string& content);
 
 #endif

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <set>
 #include <string>
+#include <conio.h>
 #include "general.hpp"
 #include "utilize.hpp"
 
@@ -76,3 +77,28 @@ bool hasExecute (std::string s) {
     return false;
 }
 
+void my_getline(std::string& content) {
+    content.clear();  // 清空原始内容
+    char ch;
+
+    while (true) {
+        ch = _getch();  // 获取单个字符，不回显
+
+        if (ch == '\r') { // Enter 键，存储换行
+            content += '\n';
+            std::cout << '\n'; // 可选：显示换行
+        }
+        else if(ch == '\b') {
+            if (!content.empty()) {
+                content.pop_back(); // 删除最后一个字符
+                std::cout << '\b' << ' ' << '\b'; // 回退一个字符并删除
+            }
+        } 
+        else if (ch == 27) { // ESC 键
+            return;
+        } else if (ch >= 32 && ch <= 126) { // 可打印字符
+            content += ch;
+            std::cout << ch;
+        }
+    }
+}
