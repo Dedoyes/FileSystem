@@ -36,6 +36,7 @@ int main () {
         load ();
     }
     std::cin.ignore ();
+    std::cout << "Loading Success :)" << std::endl;
     while (true) {
         std::string command;
         std::string name;
@@ -48,7 +49,7 @@ int main () {
             address = "/";
         } else {
             address = ft.getFilePath (currentAddress);
-            std::cout << "address = " << address << std::endl;
+            //std::cout << "address = " << address << std::endl;
         }
         std::cout << address << "@" << name << ":";
         std::getline (std::cin, command);
@@ -104,6 +105,10 @@ int main () {
             std::string fileName, content;
             iss >> fileName;
             readFile (fileName);
+        } else if (opt == "remove") {
+            std::string fileName;
+            iss >> fileName;
+            remove (fileName);
         } else {
             std::cout << "don't find this command" << std::endl;
             continue;
@@ -111,6 +116,7 @@ int main () {
         //std::cout << "currentAddress = " << currentAddress << std::endl;
     }
     storage ();
+    std::cout << "see you next time :)" << std::endl;
     return 0;
 }
 

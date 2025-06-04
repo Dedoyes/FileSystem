@@ -23,6 +23,12 @@ public :
         for (int i = 0; i < MAX_BLOCK_NUM; i++) 
             remainBlcokAddress.insert (i);
     }
+    void realeaseBlockAddress (int blockAddress) {
+        remainBlcokAddress.insert (blockAddress);
+    }
+    void realeaseIndexAddress (int indexAddress) {
+        remainIndexAddress.insert (indexAddress);
+    }
     inline bool hasFreeIndexSpace () {
         return !this->remainIndexAddress.empty ();
     }

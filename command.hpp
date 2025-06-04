@@ -29,4 +29,6 @@ void writeFile (std::string fileName, std::string content);
 
 void readFile (std::string fileName);
 
+void remove (std::string fileName);
+
 #endif

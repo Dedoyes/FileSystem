@@ -20,13 +20,17 @@ extern UserCluster userGroup;
 extern short currentAddress;
 extern fileOpenTable table;
 
-void writeFile (std::string fileName, std::string content) { 
+void writeFile (std::string fileName, std::string content) {
     std::string dirPath = ft.getFilePath (currentAddress);
     std::string absPath = dirPath + fileName;
     if (!table.count (absPath)) {
         open (fileName);
     }
     int index = table.getIndex (absPath);
+    if (!hasWrite (cluster[index].getPermission (currentUserId))) {
+        std::cout << "Sorry, you don't have permission :(" << std::endl;
+        return;
+    }
     inodeTree tree = forest[index];
     int len = cluster[index].getFileLength ();
     int rearLen = len % BLOCK_SIZE;
@@ -46,6 +50,7 @@ void writeFile (std::string fileName, std::string content) {
             r = content.size ();
             write_block (blockId, start, content.substr (l, r).c_str ());
         }
+        flag = false;
     }
     cluster[index].changeFileLength (len + content.size ());
 }
@@ -57,6 +62,10 @@ void readFile (std::string fileName) {
         open (fileName);
     }
     int index = table.getIndex (absPath);
+    if (!hasRead (cluster[index].getPermission (currentUserId))) {
+        std::cout << "Sorry, you don't have permission :(" << std::endl;
+        return;
+    }
     inodeTree tree = forest[index];
     int fileLen = cluster[index].getFileLength ();
     std::cout << "fileLen = " << fileLen << std::endl;
@@ -79,6 +88,36 @@ void readFile (std::string fileName) {
         res.append (tempStr.begin (), tempStr.end ());
     }
     std::cout << res << std::endl;
+}
+
+void remove (std::string fileName) {
+    std::string dirPath = ft.getFilePath (currentAddress);
+    std::string absPath = dirPath + fileName;
+    if (table.count (absPath)) {
+        close (fileName);
+    }
+    int index = -1;
+    for (auto x : ft.son[currentAddress]) {
+        if (ft.fileName[x] == fileName) {
+            index = x;
+            break;
+        }
+    }
+    if (index == -1) {
+        std::cout << "Warning : No such File" << std::endl;
+        return;
+    }
+    if (!hasExecute (cluster[index].getPermission (currentUserId))) {
+        std::cout << "Sorry, you don't have permission :(" << std::endl;
+    }
+    inodeTree& tree = forest[index];
+    for (auto x : tree.blockAddress) {
+        super.realeaseBlockAddress (x);
+    }
+    super.realeaseIndexAddress (index);
+    forest.erase (index);
+    ft.cut (currentAddress, index);
+    ft.fileName[index] = "";
 }
 
 void varInit () {
@@ -162,12 +201,12 @@ void mkdir (std::string dirName, bool general) {
     }
     DiskIndexNode node;
     node.init (currentUserId, DIRETORY, general);
-    std::cout << "ok" << std::endl;
+    //std::cout << "ok" << std::endl;
     inodeTree tree;
     int index = node.getIndex ();
     int freeblock = super.askFreeBlock ();
-    std::cout << "index = " << index << std::endl;
-    std::cout << "freeblock = " << freeblock << std::endl;
+    //std::cout << "index = " << index << std::endl;
+    //std::cout << "freeblock = " << freeblock << std::endl;
     super.occupyBlock (freeblock);
     tree.assignAddress (freeblock);
     forest.insert (tree, index);
@@ -180,7 +219,7 @@ void mkdir (std::string dirName, bool general) {
 void create (std::string fileName) {
     for (auto x : ft.son[currentAddress]) {
         if (ft.fileName[x] == fileName) {
-            std::cout << "Warning : " << fileName << "has been existed!" << std::endl;
+            std::cout << "Warning : " << fileName << " has been existed!" << std::endl;
             return;
         }
     }
@@ -189,8 +228,8 @@ void create (std::string fileName) {
     inodeTree tree;
     int index = node.getIndex ();
     int freeblock = super.askFreeBlock ();
-    std::cout << "index = " << index << std::endl;
-    std::cout << "freeblock = " << freeblock << std::endl;
+    //std::cout << "index = " << index << std::endl;
+    //std::cout << "freeblock = " << freeblock << std::endl;
     super.occupyBlock (freeblock);
     tree.assignAddress (freeblock);
     forest.insert (tree, index);
@@ -209,7 +248,7 @@ void ls () {
     std::cout << std::endl;
 }
 
-void cd(std::string path) {
+void cd (std::string path) {
     if (path == "..") {
         if (!currentAddress)
             return;
@@ -217,29 +256,22 @@ void cd(std::string path) {
         return;
     }
 
-    // 判断是否是绝对路径
     bool isAbsolute = !path.empty() && path[0] == '/';
     short addr = currentAddress;
 
     if (isAbsolute) {
-        // 如果是绝对路径，从根目录开始
-        addr = 0; // 假设根目录地址为 0
-        path = path.substr(1); // 去除开头的 '/'
+        addr = 0; 
+        path = path.substr(1);
     }
-
     std::vector<std::string> tokens;
     std::istringstream ss(path);
     std::string token;
-
-    // 拆分路径
     while (std::getline(ss, token, '/')) {
         if (!token.empty()) {
             tokens.push_back(token);
         }
     }
-
     if (tokens.empty()) {
-        // 单层目录切换（原逻辑）
         for (auto x : ft.son[addr]) {
             if (cluster[x].getType() == DIRETORY &&
                 ft.fileName[x] == path &&
@@ -249,7 +281,6 @@ void cd(std::string path) {
             }
         }
     } else {
-        // 多级路径切换
         for (const auto& dir : tokens) {
             bool found = false;
             for (auto x : ft.son[addr]) {
