@@ -17,7 +17,7 @@ class DiskIndexNode {
 private : 
     short ownerId;
     short fileType;
-    std::string fileStoragePermission[MAX_USER_NUM];
+    std::vector <std::string> fileStoragePermission;  // MAX_USER_NUM
     int fileAddress;                        // Adress of inode Tree in disk
     int fileLength;
     int fileConnectSum;
@@ -44,6 +44,7 @@ public :
         return this->fileAddress;
     }
     DiskIndexNode () {
+        fileStoragePermission.resize (MAX_USER_NUM);
         this->ownerId = 0;
         this->fileType = 0;
         for (int i = 0; i < MAX_USER_NUM; i++)
@@ -102,16 +103,18 @@ public :
 
 class DiskIndexNodeCluster {
 private :
-    bool vis[MAX_INDEX_NODE_NUM];
+    std::vector <bool> vis;    //MAX_INDEX_NODE_NUM]
     int current;
     int usedNum;
-    DiskIndexNode cluster[MAX_INDEX_NODE_NUM];
+    std::vector <DiskIndexNode> cluster; // MAX_INDEX_NODE_NUM
 public :
     template <class Archive>
     void serialize (Archive& ar) {
         ar (vis, current, usedNum, cluster);
     }
     DiskIndexNodeCluster () {
+        vis.resize (MAX_INDEX_NODE_NUM);
+        cluster.resize (MAX_INDEX_NODE_NUM);
         for (int i = 0; i < MAX_INDEX_NODE_NUM; i++) 
             this->vis[i] = false;
         current = 0;

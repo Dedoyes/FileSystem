@@ -51,13 +51,17 @@ public :
 };
 
 class inodeForest {
-private :
-    bool vis[MAX_INDEX_NODE_NUM];
-    inodeTree forest[MAX_INDEX_NODE_NUM];
+public :
+    std::vector <bool> vis;    // MAX_INDEX_NODE_NUM
+    std::vector <inodeTree> forest;   // MAX_INDEX_NODE_NUM
 public :
     template <class Archive>
     void serialize (Archive& ar) {
         ar (vis, forest);
+    }
+    inodeForest () {
+        vis.resize (MAX_INDEX_NODE_NUM);
+        forest.resize (MAX_INDEX_NODE_NUM);
     }
     inodeTree& operator [] (int index) {
         if (index < 0 || index >= MAX_INDEX_NODE_NUM) {

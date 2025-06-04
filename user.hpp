@@ -57,10 +57,14 @@ extern short currentUserId;
 class UserCluster {
 public :
     short userNum;
-    User user[MAX_USER_NUM];
+    std::vector <User> user;  // MAX_USER_NUM
     template <class Archive>
     void serialize (Archive& ar) {
         ar (userNum, user);
+    }
+    UserCluster () {
+        userNum = 0;
+        user.resize (MAX_USER_NUM);
     }
     void addNewUser (std::string name, std::string password) {
         if (userNum == MAX_USER_NUM) {

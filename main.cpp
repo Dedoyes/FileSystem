@@ -25,17 +25,17 @@ short currentAddress;
 fileOpenTable table;
 
 int main () {
-    FILE* start_disk = fopen (VDISK_START_FILE, "wb");
-    if (!start_disk) {
-        perror ("Failed to create virtual start disk");
-        exit (1);
+    std::cout << "Do you want a new start ?" << std::endl;
+    std::cout << "please input Y or N" << std::endl;
+    std::string isnew;
+    std::cin >> isnew;
+    if (isnew == "Y" || isnew == "y" || isnew == "yes" || isnew == "Yes") {
+        formatDisk ();
+        varInit ();
+    } else {
+        load ();
     }
-    ftruncate (fileno (start_disk), 10 * 1024 * 1024);
-    fclose (start_disk);
-    std::cout << "virtual disk init success." << std::endl;
-   
-    mkdir ("", true);
-
+    std::cin.ignore ();
     while (true) {
         std::string command;
         std::string name;
@@ -109,7 +109,8 @@ int main () {
             continue;
         }
         //std::cout << "currentAddress = " << currentAddress << std::endl;
-    } 
+    }
+    storage ();
     return 0;
 }
 

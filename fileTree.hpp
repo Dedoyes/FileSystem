@@ -7,6 +7,7 @@
 #include <set>
 #include "./cereal/include/cereal/archives/binary.hpp"
 #include "./cereal/include/cereal/types/vector.hpp"
+#include "./cereal/include/cereal/types/stack.hpp"
 #include "./general.hpp"
 #include "./IndexNode.hpp"
 
@@ -14,10 +15,22 @@ extern DiskIndexNodeCluster cluster;
 
 class fileTree {
 public :
-    short father[MAX_BLOCK_NUM];
-    short deg[MAX_BLOCK_NUM];
-    std::vector <short> son[MAX_BLOCK_NUM];
-    std::string fileName[MAX_BLOCK_NUM];
+    std::vector <short> father;                   // MAX_BLOCK_NUM
+    std::vector <short> deg;                      // MAX_BLOCK_NUM
+    std::vector <std::vector <short> > son;        // MAX_BLOCK_NUM
+    std::vector <std::string> fileName;           // MAX_BLOCK_NUM
+    fileTree () {
+        father.resize (MAX_BLOCK_NUM);
+        deg.resize (MAX_BLOCK_NUM);
+        son.resize (MAX_BLOCK_NUM);
+        fileName.resize (MAX_BLOCK_NUM);
+        for (int i = 0; i < MAX_BLOCK_NUM; i++) { 
+            this->father[i] = 0;
+            this->son[i].clear ();
+            this->deg[i] = 0;
+            this->fileName[i] = "";
+        }
+    }
     template <class Archive> 
     void serialize (Archive& ar) {
         ar (father, deg, son, fileName);
@@ -40,7 +53,7 @@ public :
                 return x;
             }
         }
-        std::cout << fileName << "isn't in dir" << std::endl;
+        std::cout << findName << "isn't in dir" << std::endl;
         exit (1);
     }
     std::string getFilePath (short fileIndex) {
@@ -55,14 +68,6 @@ public :
             res += "/";
         }
         return res;
-    }
-    fileTree () {
-        for (int i = 0; i < MAX_BLOCK_NUM; i++) { 
-            this->father[i] = 0;
-            this->son[i].clear ();
-            this->deg[i] = 0;
-            this->fileName[i] = "";
-        }
     }
     void connect (short fatherId, short sonId) {
         if (fatherId < 0 || fatherId >= MAX_BLOCK_NUM || sonId < 0 || sonId >= MAX_BLOCK_NUM) {

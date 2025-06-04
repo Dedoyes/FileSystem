@@ -66,6 +66,7 @@ void storageUserGroup () {
     }
     cereal::BinaryOutputArchive userArchive (os);
     userArchive (userGroup);
+    os.close ();
 }
 
 void readSuperBlock () {
@@ -86,6 +87,14 @@ void readInodeForest () {
         exit (1);
     }
     cereal::BinaryInputArchive forestArchive (is);
+    try {
+        forestArchive(forest);
+    } catch (const std::exception& e) {
+        std::cout << "Deserialization error: " << e.what() << std::endl;
+        exit(1);
+    }    
+    std::cout << "vis size: " << forest.vis.size() << std::endl;
+    std::cout << "forest size: " << forest.forest.size() << std::endl;
     forestArchive (forest);
     is.close ();
 }
@@ -125,10 +134,15 @@ void readUserGroup () {
 
 void load () {
     readSuperBlock ();
+    std::cout << "super load success." << std::endl;
     readFileTree ();
+    std::cout << "file tree load success." << std::endl;
     readInodeForest ();
+    std::cout << "inode forest load success." << std::endl; 
     readUserGroup ();
+    std::cout << "user group load success." << std::endl;
     readDiskIndexNodeCluster ();
+    std::cout << "cluster load success" << std::endl;
 }
 
 void storage () {
