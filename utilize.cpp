@@ -1,7 +1,7 @@
 #include <iostream>
 #include <set>
 #include <string>
-#include <termios.h>
+// #include <termios.h>
 #include "general.hpp"
 #include "utilize.hpp"
 #include "unistd.h"
@@ -78,52 +78,52 @@ bool hasExecute (std::string s) {
     return false;
 }
 
-char linux_getch() {
-    struct termios oldt, newt;
-    char ch;
+// char linux_getch() {
+//     struct termios oldt, newt;
+//     char ch;
 
-    // 获取当前终端设置
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
+//     // 获取当前终端设置
+//     tcgetattr(STDIN_FILENO, &oldt);
+//     newt = oldt;
 
-    // 设置为原始模式（禁用缓冲和回显）
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+//     // 设置为原始模式（禁用缓冲和回显）
+//     newt.c_lflag &= ~(ICANON | ECHO);
+//     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 
-    // 读取一个字符
-    read(STDIN_FILENO, &ch, 1);
+//     // 读取一个字符
+//     read(STDIN_FILENO, &ch, 1);
 
-    // 恢复终端设置
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+//     // 恢复终端设置
+//     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 
-    return ch;
-}
+//     return ch;
+// }
 
-void my_getline(std::string& content) {
-    content.clear();  // 清空原始内容
-    char ch;
+// void my_getline(std::string& content) {
+//     content.clear();  // 清空原始内容
+//     char ch;
 
-    while (true) {
-        ch = linux_getch();  // 获取单个字符，不回显
+//     while (true) {
+//         ch = linux_getch();  // 获取单个字符，不回显
 
-        if (ch == '\n' || ch == '\r') { // Enter 键
-            content += '\n';
-            std::cout << '\n';
-            break; // 与 Windows 不同：此处应结束输入
-        }
-        else if (ch == 127 || ch == 8) { // Backspace（Linux常为127）
-            if (!content.empty()) {
-                content.pop_back();
-                std::cout << "\b \b";
-            }
-        } 
-        else if (ch == 27) { // ESC 键
-            return;
-        } 
-        else if (ch >= 32 && ch <= 126) { // 可打印字符
-            content += ch;
-            std::cout << ch;
-        }
-    }
-}
+//         if (ch == '\n' || ch == '\r') { // Enter 键
+//             content += '\n';
+//             std::cout << '\n';
+//             break; // 与 Windows 不同：此处应结束输入
+//         }
+//         else if (ch == 127 || ch == 8) { // Backspace（Linux常为127）
+//             if (!content.empty()) {
+//                 content.pop_back();
+//                 std::cout << "\b \b";
+//             }
+//         } 
+//         else if (ch == 27) { // ESC 键
+//             return;
+//         } 
+//         else if (ch >= 32 && ch <= 126) { // 可打印字符
+//             content += ch;
+//             std::cout << ch;
+//         }
+//     }
+// }
 

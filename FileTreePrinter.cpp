@@ -14,7 +14,7 @@
 void printTree(fileTree& ft, short node, const std::string& prefix, bool isLast) {
     std::cout << prefix
               << (isLast ? "+-- " : "|-- ")
-              << "Node " << node
+              << ft.fileName[node]
               << std::endl;
 
     std::string newPrefix = prefix + (isLast ? "    " : "|   ");

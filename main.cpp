@@ -129,6 +129,8 @@ int main () {
             std::string fileName, newName;
             iss >> fileName >> newName;
             rename (fileName, newName);
+        } else if (opt == "fstree") {
+            printTree(ft, currentAddress, "", false);
         } else {
             std::cout << "don't find this command" << std::endl;
             continue;
