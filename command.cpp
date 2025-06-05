@@ -20,6 +20,31 @@ extern UserCluster userGroup;
 extern short currentAddress;
 extern fileOpenTable table;
 
+void rename (std::string fileName, std::string newName) {
+    bool flag = false;
+    int index = -1;
+    for (auto x : ft.son[currentAddress]) {
+        if (ft.fileName[x] == fileName) {
+            flag = true;
+            index = x;
+            break;
+        }
+    }
+    if (!flag) {
+        std::cout << "Warning : no such file." << std::endl;
+        return;
+    }
+    if (!hasWrite (cluster[index].getPermission (currentUserId))) {
+        std::cout << "Sorry, you don't have permission :(" << std::endl;
+        return;
+    }
+    std::string dirPath = ft.getFilePath (currentAddress);
+    std::string absPath = dirPath + fileName;
+    if (table.count (absPath)) 
+        table.erase (absPath);
+    ft.fileName[index] = newName;
+}
+
 void chmod (std::string fileName, short newId, std::string newPermission) {
     bool flag = false;
     for (auto x : ft.son[currentAddress]) {
@@ -115,7 +140,7 @@ void readFile (std::string fileName) {
     }
     inodeTree tree = forest[index];
     int fileLen = cluster[index].getFileLength ();
-    std::cout << "fileLen = " << fileLen << std::endl;
+    //std::cout << "fileLen = " << fileLen << std::endl;
     std::string res = "";
     if (fileLen == 0) {
         std::cout << std::endl;
@@ -129,7 +154,7 @@ void readFile (std::string fileName) {
             if (len == 0) 
                 len = BLOCK_SIZE;
         }
-        std::cout << "len = " << len << std::endl;
+        //std::cout << "len = " << len << std::endl;
         std::vector <char> tempStr (len);
         read_block (x, 0, tempStr.data (), len);
         res.append (tempStr.begin (), tempStr.end ());

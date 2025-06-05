@@ -13,7 +13,6 @@
 #include "FileTreePrinter.hpp"
 #include "fileOpenTable.hpp"
 #include "command.hpp"
-#include <conio.h>
 
 short currentUserId = -1;
 std::string fileStr[MAX_BLOCK_NUM];
@@ -24,9 +23,6 @@ fileTree ft;
 UserCluster userGroup;
 short currentAddress;
 fileOpenTable table;
-
-// 自定义 my_getline 方法
-
 
 int main () {
     std::cout << "Do you want a new start ?" << std::endl;
@@ -103,7 +99,7 @@ int main () {
             std::string fileName, content;
             iss >> fileName;
             std::cout << "please input what you want to write : " << std::endl;
-            my_getline(content);
+            getline(std::cin, content);
             std::cout << "content = " << content << std::endl;
             writeFile (fileName, content);
         } else if (opt == "read") {
@@ -118,6 +114,21 @@ int main () {
             std::string dirName;
             iss >> dirName;
             removeDir (dirName);
+        } else if (opt == "chmod") {
+            std::string fileName;
+            iss >> fileName;
+            short newId;
+            std::cout << "please input objective user id : " << std::endl;
+            std::cin >> newId;
+            std::string newPermission;
+            std::cout << "please input new permission : " << std::endl;
+            std::cin >> newPermission;
+            chmod (fileName, newId, newPermission);
+            std::cin.ignore ();
+        } else if (opt == "rename") {
+            std::string fileName, newName;
+            iss >> fileName >> newName;
+            rename (fileName, newName);
         } else {
             std::cout << "don't find this command" << std::endl;
             continue;

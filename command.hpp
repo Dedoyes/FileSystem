@@ -3,6 +3,10 @@
 
 #include <string>
 
+void rename (std::string fileName, std::string newName);
+
+void chmod (std::string fileName, short newId, std::string newPermission);
+
 void varInit (void);
 
 void formatDisk (void);
